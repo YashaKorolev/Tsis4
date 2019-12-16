@@ -18,7 +18,7 @@ struct Alternative
 
 void CreateCriteries(Criterion* CritMass, int n)
 {
-	
+
 	CritMass[0].number = 1;
 	CritMass[0].Name = "Heal Quality";
 	CritMass[0].rate = 10;
@@ -58,7 +58,7 @@ void NormalizeCrit(Criterion* CritMass, int n)
 }
 void CreateAlternatives(Alternative*& AltMass, int m, int n)
 {
-	
+
 	AltMass[0].Name = "Lipetsk";
 	AltMass[0].rate = new float[n];
 	AltMass[0].rate[0] = 10;
@@ -90,11 +90,11 @@ void CreateAlternatives(Alternative*& AltMass, int m, int n)
 void PrintAlt(Alternative* AltMass, int m, int n)
 {
 	printf("____________________");
-	for (int i = 0; i < m; i++) 
+	for (int i = 0; i < m; i++)
 	{
-		printf("_____________"); 
+		printf("_____________");
 	}
-	cout << endl; 
+	cout << endl;
 	printf(" %17s |", "Name");
 	for (int j = 0; j < m; j++)
 	{
@@ -104,11 +104,11 @@ void PrintAlt(Alternative* AltMass, int m, int n)
 	for (int i = 0; i < m; i++)
 	{
 		printf("____________________");
-		for (int i = 0; i < m; i++) 
+		for (int i = 0; i < m; i++)
 		{
-			printf("_____________"); 
+			printf("_____________");
 		}
-		cout << endl; 
+		cout << endl;
 		printf(" %17s |", AltMass[i].Name.c_str());
 		for (int j = 0; j < m; j++)
 		{
@@ -118,14 +118,14 @@ void PrintAlt(Alternative* AltMass, int m, int n)
 	}
 	cout << endl;
 }
-int NormalizeAlt(Alternative* AltMass, int m, int n)
+int NormalizeAlt(Alternative* AltMass, int m, int n, int a)
 {
-	cout << "Choose number of Main Criterion: ";
-	int a; 
-	cin >> a;
-	a--; 
-	float* max = new float[n]; 
-	float* min = new float[n]; 
+	cout << "Choose number of Main Criterion: " << a << endl;
+	//int a ; 
+	//cin >> a;
+	a--;
+	float* max = new float[n];
+	float* min = new float[n];
 	for (int i = 0; i < n; i++)
 	{
 		max[i] = AltMass[0].rate[i];
@@ -153,7 +153,7 @@ int NormalizeAlt(Alternative* AltMass, int m, int n)
 				AltMass[i].rate[j] = (AltMass[i].rate[j] - min[j]) / (max[j] - min[j]);
 		}
 	}
-	return a; 
+	return a;
 }
 void NormalizeAltForWeighting(Alternative* AltMass, int m, int n)
 {
@@ -223,9 +223,9 @@ void PrintMatrix(vector<vector<float>> Matrix)
 	}
 }
 
-int ConstraintOM(Alternative* AltMass, Criterion* CritMass, int m, int n)
+int ConstraintOM(Alternative* AltMass, Criterion* CritMass, int m, int n, int a)
 {
-	int mainCrit = NormalizeAlt(AltMass, m, n);
+	int mainCrit = NormalizeAlt(AltMass, m, n, a);
 	printf("Table of Normalized Alternatives:\n");
 	PrintAlt(AltMass, m, n);
 
@@ -236,13 +236,19 @@ int ConstraintOM(Alternative* AltMass, Criterion* CritMass, int m, int n)
 		isGoodAlt[i] = true;
 	}
 
-	float* goodIs = new float[n]; 
+	float* goodIs = new float[n];
+
+	goodIs[0] = 0.24f;
+	goodIs[1] = 0.3f;
+	
+	goodIs[3] = 0.28f;
+
 	for (int i = 0; i < n; i++)
 	{
 		if (i != mainCrit)
 		{
-			cout << "Input minimum part of maximum criterion #" << CritMass[i].number << ": ";
-			cin >> goodIs[i];
+			cout << "Input minimum part of maximum criterion #" << CritMass[i].number << ": " << goodIs[i] << endl;
+
 		}
 	}
 
@@ -296,13 +302,13 @@ int ConstraintOM(Alternative* AltMass, Criterion* CritMass, int m, int n)
 		return 0;
 	}
 }
-int Сonstriction(Alternative* AltMass, Criterion* CritMass, int m, int n)
+int Сonstriction(Alternative* AltMass, Criterion* CritMass, int m, int n, int firstMain, int secondMain)
 {
-	int firstMain, secondMain;
-	cout << "Choose first main criterion: ";
-	cin >> firstMain;
-	cout << "Choose second main criterion: ";
-	cin >> secondMain;
+	
+	cout << "Choose first main criterion: " << firstMain << endl;
+	
+	cout << "Choose second main criterion: " << secondMain << endl;
+	
 	firstMain--;
 	secondMain--;
 
@@ -326,7 +332,7 @@ int WeighingMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 	PrintAlt(AltMass, m, n);
 
 	float* GeneralVector = new float[m];
-	for (int i = 0; i < m; i++) 
+	for (int i = 0; i < m; i++)
 	{
 		GeneralVector[i] = 0;
 		for (int j = 0; j < n; j++)
@@ -354,9 +360,9 @@ int WeighingMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 int HierarchyMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 {
 	vector<vector<float>> CritMatrix{ {   1   ,   2   ,   4  , 7 },
-										{  0.5  ,   1   ,   3  , 6 },
-										{ 0.25  , 0.33  ,   1  , 3 },
-										{ 0.143 , 0.167 , 0.33 , 1 } };
+									  {  0.5  ,   1   ,   3  , 6 },
+									  { 0.25  , 0.33  ,   1  , 3 },
+									  { 0.143 , 0.167 , 0.33 , 1 } };
 	cout << " Criterion Matrix: " << endl;
 	PrintMatrix(CritMatrix);
 	float consistencyCritMatrix = 0.021;
@@ -365,9 +371,9 @@ int HierarchyMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 	PrintVector(CritVector);
 
 	vector<vector<float>> HealMatrix{ {   1   ,  3   ,  5  , 6 },
-										{  0.33 ,  1   ,  3  , 4 },
-										{  0.2  , 0.33 ,  1  , 2 },
-										{ 0.167 , 0.25 , 0.5 , 1 } };
+									  {  0.33 ,  1   ,  3  , 4 },
+									  {  0.2  , 0.33 ,  1  , 2 },
+									  { 0.167 , 0.25 , 0.5 , 1 } };
 
 	cout << " Heal Quality Matrix: " << endl;
 	PrintMatrix(HealMatrix);
@@ -377,9 +383,9 @@ int HierarchyMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 	PrintVector(HealVector);
 
 	vector<vector<float>> EatMatrix{ {  1  , 6 , 6 ,  3  },
-										{ 0.167 , 1 , 1 , 0.25 },
-										{ 0.167 , 1 , 1 , 0.25 },
-										{ 0.33 , 4 , 4 ,  1  } };
+									 { 0.167 , 1 , 1 , 0.25 },
+									 { 0.167 , 1 , 1 , 0.25 },
+									 { 0.33 , 4 , 4 ,  1  } };
 	cout << " Eat Quality Matrix: " << endl;
 	PrintMatrix(EatMatrix);
 	float consistencyEatMatrix = 0.023;
@@ -388,9 +394,9 @@ int HierarchyMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 	PrintVector(EatVector);
 
 	vector<vector<float>> ServiceMatrix{ { 1 , 0.2 , 1 ,	0.25 },
-											{ 5 ,  1  , 5 , 0.33 },
-											{ 1 , 0.2 , 1 , 0.25 },
-											{ 4 ,  3  , 4 ,   1  } };
+										 { 5 ,  1  , 5 , 0.33 },
+										 { 1 , 0.2 , 1 , 0.25 },
+										 { 4 ,  3  , 4 ,   1  } };
 	cout << " Service Quality Matrix: " << endl;
 	PrintMatrix(ServiceMatrix);
 	float consistencyServiceMatrix = 0.085;
@@ -399,9 +405,9 @@ int HierarchyMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 	PrintVector(ServiceVector);
 
 	vector<vector<float>> LenMatrix{ {   1   , 7 ,  5   ,   5  },
-										{ 0.143 , 1 , 0.33 , 0.33 },
-										{  0.2  , 3 ,  1   ,   1  },
-										{  0.2  , 3 ,  1   ,   1  } };
+									 { 0.143 , 1 , 0.33 , 0.33 },
+									 {  0.2  , 3 ,  1   ,   1  },
+									 {  0.2  , 3 ,  1   ,   1  } };
 	cout << " Distance Matrix: " << endl;
 	PrintMatrix(LenMatrix);
 	float consistencyLenMatrix = 0.028;
@@ -419,7 +425,7 @@ int HierarchyMethod(Alternative* AltMass, Criterion* CritMass, int m, int n)
 	PrintMatrix(VectorMatrix);
 
 	vector<float> resultVector = {};
-	for (int i = 0; i < m; i++) 
+	for (int i = 0; i < m; i++)
 	{
 		resultVector.push_back(0);
 		for (int j = 0; j < n; j++)
@@ -459,22 +465,25 @@ int main()
 	printf("Table of Alternatives:\n");
 	PrintAlt(AltMass, m, n);
 
-	
-	
-	
-		ConstraintOM(AltMass, CritMass, m, n);
-	
-	
-		Сonstriction(AltMass, CritMass, m, n);
-	
-	
-		WeighingMethod(AltMass, CritMass, m, n);
-	
-	
-		HierarchyMethod(AltMass, CritMass, m, n);
-	
 
-	
+	cout << "\n\n\n";
+	cout << "Criteria Replacement Criteria Constraint Method" << endl << endl;
+	ConstraintOM(AltMass, CritMass, m, n, 3);
+
+	cout << "\n\n\n";
+	cout << "The formation and narrowing of the Pareto set" << endl << endl;
+	Сonstriction(AltMass, CritMass, m, n, 1,2);
+
+	cout << "\n\n\n";
+	cout << "Weighting and combining criteria" << endl << endl;
+	WeighingMethod(AltMass, CritMass, m, n);
+
+	cout << "\n\n\n";
+	cout << "Hierarchy Analysis Method" << endl << endl;
+	HierarchyMethod(AltMass, CritMass, m, n);
+
+
+
 	system("pause");
 	return 0;
 }
